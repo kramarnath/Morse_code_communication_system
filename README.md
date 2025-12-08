@@ -1,3 +1,48 @@
+# Morse Code Communication System using ESP32 + Laser
+
+A wireless optical communication system implemented using two ESP32 microcontrollers, a laser transmitter, a laser receiver (LDR/photodiode module), and LCD displays.
+
+The system converts button input into Morse code, transmits pulses through a laser beam, receives and decodes the pulses, and displays the output on LCD.
+
+---
+
+## 🚀 Features
+- Dot and dash input using buttons  
+- Morse code encoding on ESP32  
+- Laser-based optical transmission  
+- LDR/photodiode-based reception  
+- LCD output on both TX and RX sides  
+- Buzzer feedback on receiver  
+- Simple, reliable and low-cost communication  
+
+---
+
+## 🧰 Hardware Used
+- ESP32 Dev Boards (2)  
+- Laser Transmitter Module  
+- Laser Receiver (LDR / Photodiode sensor)  
+- 16x2 LCD Display  
+- Push Buttons  
+- Buzzer  
+- Power Supply / Battery  
+- Resistors & Jumper wires  
+
+---
+
+## 📡 System Overview
+
+### **Transmitter**
+- User presses DOT (.) or DASH (-) buttons  
+- ESP32 stores Morse pattern  
+- Laser outputs timed ON/OFF pulses  
+- LCD displays entered Morse symbols  
+
+### **Receiver**
+- LDR/photodiode detects laser pulses  
+- ESP32 calculates pulse duration  
+- Short pulse = DOT, long pulse = DASH  
+- LCD displays the decoded Morse  
+- Buzzer beeps on each received pulse  
 
 ---
 
@@ -30,12 +75,7 @@
 1. Align the laser to the LDR  
 2. Receiver detects flashes  
 3. LCD shows Morse code  
-4. Buzzer beeps for each pulse  
-
----
-
-## 📸 Images
-Place your TX/RX images in the `/Images` folder.
+4. Buzzer beeps for each pulse
 
 ---
 
