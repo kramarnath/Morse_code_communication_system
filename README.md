@@ -83,8 +83,3 @@ A wireless morse code communication system implemented using two ESP32 microcont
 - Higher-range laser  
 - WiFi/Bluetooth Morse messaging  
 - Error correction  
-
----
-
-## 📜 License
-This project is open-source. You may use and modify it with credit.
