@@ -13,7 +13,10 @@ const int dashButton   = 5;
 const int letterButton = 18;    // NEW: press to mark end of a letter
 
 // Laser output pin
-const int laserPin = 2;
+const int laserPin  = 2;
+
+// Buzzer pin
+const int buzzerPin = 17;
 
 // Morse timing (ms)
 const int dotTime   = 200;
@@ -52,6 +55,7 @@ void setup() {
   pinMode(dashButton,   INPUT_PULLUP);
   pinMode(letterButton, INPUT_PULLUP);
   pinMode(laserPin,     OUTPUT);
+  pinMode(buzzerPin,    OUTPUT);
 
   lcd.begin(16, 2);
   lcd.clear();
@@ -98,9 +102,11 @@ void sendDot() {
   Serial.print("DOT  | current symbol: ");
   Serial.println(morseSymbol);
 
-  digitalWrite(laserPin, HIGH);
+  digitalWrite(laserPin,  HIGH);
+  digitalWrite(buzzerPin, HIGH);
   delay(dotTime);
-  digitalWrite(laserPin, LOW);
+  digitalWrite(laserPin,  LOW);
+  digitalWrite(buzzerPin, LOW);
   delay(symbolGap);
 
   updateLCD();
@@ -115,9 +121,11 @@ void sendDash() {
   Serial.print("DASH | current symbol: ");
   Serial.println(morseSymbol);
 
-  digitalWrite(laserPin, HIGH);
+  digitalWrite(laserPin,  HIGH);
+  digitalWrite(buzzerPin, HIGH);
   delay(dashTime);
-  digitalWrite(laserPin, LOW);
+  digitalWrite(laserPin,  LOW);
+  digitalWrite(buzzerPin, LOW);
   delay(symbolGap);
 
   updateLCD();
@@ -140,6 +148,12 @@ void sendLetterGap() {
   Serial.print("  ->  '");
   Serial.print(decoded);
   Serial.println("'");
+
+  // Confirmation double-beep so the sender hears each letter was sent
+  digitalWrite(buzzerPin, HIGH); delay(80);
+  digitalWrite(buzzerPin, LOW);  delay(80);
+  digitalWrite(buzzerPin, HIGH); delay(80);
+  digitalWrite(buzzerPin, LOW);
 
   // Append decoded char — scroll left if row is full
   if (messageLen < 12) {
