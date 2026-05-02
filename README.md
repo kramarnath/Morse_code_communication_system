@@ -14,6 +14,7 @@ A wireless morse code communication system implemented using two ESP32 microcont
     <td align="center"><img src="images/Morse_code_transmitter.jpg" alt="images/Morse_code_transmitter" height="200"/></td>
   </tr>
 </table>
+
 ---
 
 ## Features
@@ -26,7 +27,7 @@ A wireless morse code communication system implemented using two ESP32 microcont
 - Hysteresis on sensor threshold to prevent signal chatter
 - Automatic letter-gap timeout on receiver for hands-free decoding
 - Scrolling LCD output on both TX and RX sides — no clipping
-- Buzzer feedback on receiver for each received pulse
+- Buzzer voice output on both TX and RX — short beep = dot, long beep = dash, double-beep on letter decode
 - Serial Monitor debug output on both boards (115200 baud)
 - Simple, reliable and low-cost communication
 
@@ -42,6 +43,7 @@ A wireless morse code communication system implemented using two ESP32 microcont
 | Laser Transmitter Module | 1 |
 | 16x2 LCD Display | 1 |
 | Push Buttons | 3 |
+| Buzzer | 1 |
 | Power Supply / Battery | 1 |
 | Resistors & Jumper Wires | — |
 
@@ -65,18 +67,16 @@ The system runs two independent ESP32 boards over a single laser link:
 ```
 Transmitter ESP32
 ├── Reads: Dot button, Dash button, Letter button
-├── Drives: Laser module (timed ON/OFF pulses)
+├── Drives: Laser module (timed ON/OFF pulses) + Buzzer (audio feedback)
 └── Displays: Current symbol (row 1) + decoded message (row 0) on LCD
 
         [ Laser Beam ]
 
 Receiver ESP32
 ├── Reads: LDR / Photodiode (analog)
-├── Drives: Buzzer (beep per pulse)
+├── Drives: Buzzer (beep per pulse + double-beep on letter decode)
 └── Displays: Raw morse (row 1) + decoded message (row 0) on LCD
 ```
-
-> The suction motor on the vacuum cleaner equivalent here is the laser — it runs every time a button is pressed with no additional control layer needed. Decoding happens independently on each side.
 
 ---
 
@@ -88,6 +88,7 @@ Receiver ESP32
     <td align="center"><img src="images/Receiver_block_diagram.png" alt="images/Morse_code_Receiver" height="200"/></td>
   </tr>
 </table>
+
 ---
 
 ## Pin Configuration
@@ -100,6 +101,7 @@ Receiver ESP32
 | Dash Button | 5 |
 | Letter Button | 18 |
 | Laser Module | 2 |
+| Buzzer | 17 |
 | LCD (RS, E, D4, D5, D6, D7) | GPIO 13, 12, 14, 27, 26, 25 |
 
 ### Receiver — ESP32
@@ -122,14 +124,14 @@ The receiver follows a priority-based decision sequence on every loop iteration:
 ```
 1. Read analog sensor value
 2. Laser ON detected (value > threshold + hysteresis)?  → Start pulse timer, buzz ON
-3. Laser OFF detected (value < threshold - hysteresis)? → Stop timer, classify pulse
+3. Laser OFF detected (value < threshold - hysteresis)? → Stop timer, classify pulse, buzz OFF
        pulse duration < 400 ms → DOT
        pulse duration ≥ 400 ms → DASH
-4. Silence > 800 ms with symbol buffered?              → Decode symbol → append to message
+4. Silence > 800 ms with symbol buffered?              → Decode symbol → double-beep → append to message
 5. Update LCD row 0 (message) and row 1 (raw morse)
 ```
 
-**Obstacle threshold equivalent:** 400 ms midpoint (configurable via `thresholdMs` constant — set as midpoint of `dotTime` and `dashTime`)
+**Decode threshold:** 400 ms midpoint (configurable via `thresholdMs` constant — set as midpoint of `dotTime` and `dashTime`)
 
 ---
 
@@ -156,7 +158,7 @@ All timing constants are defined at the top of each `.ino` file and kept in sync
 3. Open `Morse_code_transmitter/Morse_code_transmitter.ino` in **Arduino IDE**
 4. Select **Board:** ESP32 Dev Module and the correct **COM Port**, then upload
 5. Open `Morse_code_receiver/Morse_code_receiver.ino`, select the second COM Port, then upload
-6. Open **Serial Monitor** at `9600 baud` on either board to watch live sensor readings
+6. Open **Serial Monitor** at `115200 baud` on either board to watch live sensor readings
 7. Power both boards, align the laser beam to the LDR, and begin transmitting
 
 > [!TIP]
@@ -168,6 +170,17 @@ All timing constants are defined at the top of each `.ino` file and kept in sync
 
 ### Laser Transmission
 The transmitter fires the laser for a timed duration on each button press — 200 ms for a dot, 600 ms for a dash. A 200 ms OFF gap follows each symbol element. When the LETTER button is pressed, an 800 ms silence is held to signal end of character.
+
+### Buzzer Feedback (TX and RX)
+Both sides use a buzzer to give audio confirmation of every Morse event:
+
+| Event | Buzzer behaviour |
+|---|---|
+| Dot transmitted / received | Short beep — 200 ms |
+| Dash transmitted / received | Long beep — 600 ms |
+| Letter decoded | Double-beep — 80 ms ON, 80 ms OFF, 80 ms ON |
+
+On the transmitter the buzzer fires simultaneously with the laser, so the sender hears exactly what is being sent. On the receiver the buzzer mirrors each incoming pulse and double-beeps when a full character is decoded.
 
 ### LDR / Photodiode Reception
 On startup the receiver samples 100 ambient light readings with the laser OFF, averages them, and adds a 300-count margin to set the detection threshold automatically. This means the receiver adapts to any room lighting without manual tuning.
@@ -201,7 +214,7 @@ Both boards show the same two-row format:
 - No PWM or variable laser power — transmission is fixed intensity only
 - Fixed timing constants may need tuning if the ESP32 loop has added processing load
 - No memory of previously sent messages — display clears on power cycle
-- Suction motor equivalent (laser) runs at a single speed — no intensity encoding
+- Buzzer does not distinguish between characters — only dot, dash, and letter-decoded audio cues
 
 ---
 
