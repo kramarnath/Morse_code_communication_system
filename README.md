@@ -108,7 +108,7 @@ All timing constants are defined at the top of each `.ino` file and kept in sync
 
 ---
 
-## 🛠 Improvements Made
+## Improvements Made
 - **Letter-gap button (TX):** Third button on GPIO 18 lets the transmitter explicitly signal the end of each character
 - **Morse decode (TX + RX):** Full A–Z and 0–9 lookup table on both sides; decoded text shown on LCD row 0
 - **Auto-calibration (RX):** Samples 100 ambient readings on startup to set the LDR threshold dynamically
@@ -121,7 +121,7 @@ All timing constants are defined at the top of each `.ino` file and kept in sync
 
 ---
 
-## 🛠 Future Work
+## Future Work
 - Wireless (WiFi / Bluetooth) Morse messaging
 - Higher-range laser module
 - Error correction / parity check
