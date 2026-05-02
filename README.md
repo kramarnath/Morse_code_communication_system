@@ -3,7 +3,7 @@
 A wireless morse code communication system implemented using two ESP32 microcontrollers, a laser transmitter, a laser receiver (LDR/photodiode module), and LCD displays. The system converts button input into Morse code, transmits pulses through a laser beam, receives and decodes the pulses into alphabet characters, and displays the output on LCD.
 
 > [!NOTE]
-> Hardware project | Arduino IDE | C/C++ | ESP32
+> Hardware project | ESP32 | C/C++
 
 ---
 
