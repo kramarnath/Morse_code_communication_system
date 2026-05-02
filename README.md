@@ -82,8 +82,12 @@ Receiver ESP32
 
 ## Block Diagram
 
-<img src="images/Block_diagram.png" alt="System block diagram" width="400"/>
-
+<table>
+  <tr>
+    <td align="center"><img src="images/transmitter_block_diagram.png" alt="Morse_code_Transmitter" height="200"/></td>
+    <td align="center"><img src="images/Receiver_block_diagram.png" alt="images/Morse_code_receiver" height="200"/></td>
+  </tr>
+</table>
 ---
 
 ## Pin Configuration
