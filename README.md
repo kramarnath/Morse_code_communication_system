@@ -2,8 +2,14 @@
 
 A wireless morse code communication system implemented using two ESP32 microcontrollers, a laser transmitter, a laser receiver (LDR/photodiode module), and LCD displays. The system converts button input into Morse code, transmits pulses through a laser beam, receives and decodes the pulses into alphabet characters, and displays the output on LCD.
 
-<img src="images/Morse_code_receiver.jpg" width="500">
-<img src="images/Morse_code_transmitter.jpg" width="500">
+## Demo
+<table>
+  <tr>
+    <td align="center"><img src="images/Morse_code_receiver.jpg" alt="Morse_code_receiver" height="200"/></td>
+    <td align="center"><img src="images/Morse_code_transmitter.jpg" alt="images/Morse_code_transmitter" height="200"/></td>
+  </tr>
+</table>
+
 ---
 
 ## Features
